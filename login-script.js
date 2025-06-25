@@ -1,7 +1,4 @@
-const supabase = supabase.createClient(
-  'https://evyjhdpzseecbeqxvuqw.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2eWpoZHB6c2VlY2JlcXh2dXF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MTA3NTQsImV4cCI6MjA2NjM4Njc1NH0.xhcKqch-fwtJ2QcpPM9kil9CYtkuhvaAtJJXuWt4iMo'
-);
+
 
 function togglePassword() {
   const passwordInput = document.getElementById("password")
