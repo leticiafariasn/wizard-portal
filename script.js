@@ -3,21 +3,7 @@ const events = JSON.parse(localStorage.getItem("wizardEvents")) || {}
 let selectedDate = null
 let selectedUnit = "all"
 
-const monthNames = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
-]
-
+const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
 
 const unitNames = {
@@ -34,16 +20,24 @@ const unitNames = {
 
 function checkUserLoggedIn() {
   supabase.auth.getUser().then(({ data: { user } }) => {
-    const loginBtn = document.getElementById('login-btn');
-    const profileBtn = document.getElementById('profile-btn');
+    const loginBtn = document.getElementById("login-btn");
+    const userDropdown = document.getElementById("user-dropdown");
 
     if (user) {
-      loginBtn.style.display = 'none';
-      profileBtn.style.display = 'inline-block';
+      loginBtn.style.display = "none";
+      userDropdown.style.display = "inline-block";
+      const username = user.user_metadata.full_name || user.email || "Usuário";
+      document.getElementById("user-name").textContent = `Olá, ${username.split(" ")[0]}`;
     } else {
-      loginBtn.style.display = 'inline-block';
-      profileBtn.style.display = 'none';
+      loginBtn.style.display = "inline-block";
+      userDropdown.style.display = "none";
     }
+  });
+}
+
+function logout() {
+  supabase.auth.signOut().then(() => {
+    window.location.reload();
   });
 }
 
@@ -71,13 +65,10 @@ function generateCalendar() {
   const monthYear = document.getElementById("monthYear")
 
   calendar.innerHTML = ""
-
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
-
   monthYear.textContent = `${monthNames[month]} ${year}`
 
-  // Add day headers
   dayNames.forEach((day) => {
     const dayHeader = document.createElement("div")
     dayHeader.className = "day-header"
@@ -85,26 +76,22 @@ function generateCalendar() {
     calendar.appendChild(dayHeader)
   })
 
-  // Get first day of month and number of days
   const firstDay = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const daysInPrevMonth = new Date(year, month, 0).getDate()
 
-  // Add previous month's trailing days
   for (let i = firstDay - 1; i >= 0; i--) {
     const dayCell = createDayCell(daysInPrevMonth - i, true)
     calendar.appendChild(dayCell)
   }
 
-  // Add current month's days
   for (let day = 1; day <= daysInMonth; day++) {
     const dayCell = createDayCell(day, false)
     calendar.appendChild(dayCell)
   }
 
-  // Add next month's leading days
-  const totalCells = calendar.children.length - 7 // Subtract day headers
-  const remainingCells = 42 - totalCells // 6 rows × 7 days
+  const totalCells = calendar.children.length - 7
+  const remainingCells = 42 - totalCells
   for (let day = 1; day <= remainingCells; day++) {
     const dayCell = createDayCell(day, true)
     calendar.appendChild(dayCell)
@@ -114,14 +101,10 @@ function generateCalendar() {
 function createDayCell(day, isOtherMonth) {
   const dayCell = document.createElement("div")
   dayCell.className = "day-cell"
-
-  if (isOtherMonth) {
-    dayCell.classList.add("other-month")
-  }
+  if (isOtherMonth) dayCell.classList.add("other-month")
 
   const today = new Date()
   const cellDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-
   if (!isOtherMonth && cellDate.toDateString() === today.toDateString()) {
     dayCell.classList.add("today")
   }
@@ -143,7 +126,6 @@ function createDayCell(day, isOtherMonth) {
         }
       })
     }
-
     dayCell.addEventListener("click", () => openModal(day))
   }
 
@@ -156,7 +138,6 @@ function openModal(day) {
   const modalTitle = document.getElementById("modalTitle")
 
   modalTitle.textContent = `Eventos - ${day} de ${monthNames[currentDate.getMonth()]}`
-
   displayEvents()
   modal.style.display = "block"
 }
@@ -186,9 +167,7 @@ function addEvent() {
 
   const dateKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${selectedDate}`
 
-  if (!events[dateKey]) {
-    events[dateKey] = []
-  }
+  if (!events[dateKey]) events[dateKey] = []
 
   const newEvent = {
     id: Date.now(),
@@ -208,11 +187,7 @@ function addEvent() {
 function deleteEvent(dateKey, eventId) {
   if (confirm("Tem certeza que deseja excluir este evento?")) {
     events[dateKey] = events[dateKey].filter((event) => event.id !== eventId)
-
-    if (events[dateKey].length === 0) {
-      delete events[dateKey]
-    }
-
+    if (events[dateKey].length === 0) delete events[dateKey]
     saveEvents()
     displayEvents()
     generateCalendar()
@@ -222,7 +197,6 @@ function deleteEvent(dateKey, eventId) {
 function displayEvents() {
   const eventsList = document.getElementById("eventsList")
   const dateKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${selectedDate}`
-
   eventsList.innerHTML = ""
 
   if (events[dateKey] && events[dateKey].length > 0) {
@@ -263,8 +237,7 @@ function displayEvents() {
         eventsList.appendChild(eventItem)
       })
     } else {
-      eventsList.innerHTML =
-        '<p style="text-align: center; color: #666;">Nenhum evento para a unidade selecionada nesta data.</p>'
+      eventsList.innerHTML = '<p style="text-align: center; color: #666;">Nenhum evento para a unidade selecionada nesta data.</p>'
     }
   } else {
     eventsList.innerHTML = '<p style="text-align: center; color: #666;">Nenhum evento nesta data.</p>'
@@ -296,15 +269,10 @@ function nextMonth() {
   generateCalendar()
 }
 
-// Close modal when clicking outside
 window.onclick = (event) => {
   const modal = document.getElementById("eventModal")
-  if (event.target === modal) {
-    closeModal()
-  }
+  if (event.target === modal) closeModal()
 }
 
-// Initialize calendar
 generateCalendar()
-
-document.addEventListener("DOMContentLoaded", checkUserLoggedIn);
+document.addEventListener("DOMContentLoaded", checkUserLoggedIn)
