@@ -43,7 +43,10 @@ const supabase = window.supabase
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
   checkAuthAndLoadUser()
-  showSection("frequencia")
+  // Force load frequency section after a small delay to ensure DOM is ready
+  setTimeout(() => {
+    showSection("frequencia")
+  }, 100)
 })
 
 async function checkAuthAndLoadUser() {
@@ -90,7 +93,7 @@ function redirectToLogin() {
   window.location.href = "login.html"
 }
 
-function showSection(section) {
+function showSection(section, event) {
   currentSection = section
   selectedClass = null
   selectedStudent = null
@@ -101,9 +104,20 @@ function showSection(section) {
   })
 
   // Find the clicked nav item and make it active
-  const clickedItem = event?.target?.closest(".nav-item")
-  if (clickedItem) {
-    clickedItem.classList.add("active")
+  if (event) {
+    const clickedItem = event.target.closest(".nav-item")
+    if (clickedItem) {
+      clickedItem.classList.add("active")
+    }
+  } else {
+    // If no event, find the nav item by section name
+    const navItems = document.querySelectorAll(".nav-item")
+    navItems.forEach((item) => {
+      const navText = item.querySelector(".nav-text")
+      if (navText && navText.textContent.toLowerCase().includes(section.toLowerCase())) {
+        item.classList.add("active")
+      }
+    })
   }
 
   // Update title and content
