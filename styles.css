@@ -6,7 +6,7 @@
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: #ffffff;
   min-height: 100vh;
 }
@@ -18,7 +18,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 20px rgba(2, 17, 103, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   border-bottom: 3px solid #cf1c29;
 }
 
@@ -68,13 +68,13 @@ body {
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(207, 28, 41, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-login:hover {
   background: linear-gradient(135deg, #b01621 0%, #9a1419 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(207, 28, 41, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* User Menu Styles */
@@ -95,13 +95,13 @@ body {
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(207, 28, 41, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .user-button:hover {
   background: linear-gradient(135deg, #b01621 0%, #9a1419 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(207, 28, 41, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .user-dropdown {
@@ -169,7 +169,7 @@ body {
   padding: 12px 40px 12px 15px;
   border: 2px solid #555;
   border-radius: 15px;
-  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   color: white;
   font-size: 14px;
   min-width: 180px;
@@ -187,7 +187,7 @@ body {
 .filter-select:focus {
   outline: none;
   border-color: #cf1c29;
-  box-shadow: 0 0 15px rgba(207, 28, 41, 0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .filter-select:hover {
@@ -215,13 +215,13 @@ body {
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(2, 17, 103, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-add-event:hover:not(:disabled) {
   background: linear-gradient(135deg, #0a1a5c 0%, #051040 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(2, 17, 103, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .btn-add-event:disabled {
@@ -243,7 +243,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   padding: 25px 30px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -267,13 +267,13 @@ body {
   font-size: 14px;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(207, 28, 41, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .nav-button:hover {
   background: linear-gradient(135deg, #b01621 0%, #9a1419 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(207, 28, 41, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Calendar Grid */
@@ -299,7 +299,7 @@ body {
 }
 
 .day-cell {
-  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   min-height: 120px;
   padding: 12px;
   cursor: pointer;
@@ -309,13 +309,13 @@ body {
 }
 
 .day-cell:hover {
-  background: linear-gradient(135deg, #4a4a4a 0%, #5a5a5a 100%);
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
   border-color: #cf1c29;
   transform: scale(1.02);
 }
 
 .day-cell.other-month {
-  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: #888;
 }
 
@@ -389,7 +389,7 @@ body {
 }
 
 .modal-content {
-  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   margin: 3% auto;
   padding: 40px;
   border-radius: 25px;
@@ -447,7 +447,7 @@ body {
   padding: 15px;
   border: 2px solid #555;
   border-radius: 12px;
-  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: white;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -458,7 +458,7 @@ body {
 .form-group textarea:focus {
   outline: none;
   border-color: #cf1c29;
-  box-shadow: 0 0 15px rgba(207, 28, 41, 0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn {
@@ -472,13 +472,13 @@ body {
   font-weight: 600;
   margin-right: 15px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(207, 28, 41, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #b01621 0%, #9a1419 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(207, 28, 41, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .btn:disabled {
@@ -504,7 +504,7 @@ body {
 }
 
 .event-item {
-  background: linear-gradient(135deg, #4a4a4a 0%, #5a5a5a 100%);
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
   padding: 20px;
   margin-bottom: 15px;
   border-radius: 15px;
@@ -541,7 +541,7 @@ body {
   margin-top: 30px;
   flex-wrap: wrap;
   padding: 20px;
-  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   border-radius: 15px;
   border: 1px solid #555;
 }
