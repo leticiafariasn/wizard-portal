@@ -121,30 +121,31 @@ async function loadClassesFromDatabase() {
   }
 }
 
-// Atualizar a função checkAuthAndLoadUser() para usar localStorage
+// Atualizar a função checkAuthAndLoadUser() para usar Supabase Auth:
 
 async function checkAuthAndLoadUser() {
   try {
     // Add a small delay to ensure DOM is fully loaded
     await new Promise((resolve) => setTimeout(resolve, 100))
 
-    // Verificar se há usuário logado no localStorage
-    const storedUser = localStorage.getItem("wizardUser")
+    // Verificar se há usuário logado no Supabase Auth
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
 
-    if (!storedUser) {
+    if (!user || error) {
       console.log("No user found, redirecting to login")
       redirectToLogin()
       return
     }
 
-    const user = JSON.parse(storedUser)
-
     // User is authenticated, load their data
     currentUser = {
       id: user.id,
       email: user.email,
-      username: user.full_name || user.email || "Usuário",
-      role: user.role || "Professor",
+      username: user.user_metadata?.full_name || user.email || "Usuário",
+      role: user.user_metadata?.role || "Professor",
     }
 
     console.log("User authenticated:", currentUser.username)
@@ -773,12 +774,12 @@ function getDocumentosContent() {
     `
 }
 
-// Atualizar a função logout() para limpar localStorage
+// Atualizar a função logout() para usar Supabase Auth:
 
 async function logout() {
   if (confirm("Tem certeza que deseja sair?")) {
     try {
-      localStorage.removeItem("wizardUser")
+      await supabase.auth.signOut()
       window.location.href = "index.html"
     } catch (error) {
       console.error("Error signing out:", error)

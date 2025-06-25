@@ -32,45 +32,24 @@ async function loginUser() {
   }
 
   try {
-    // Buscar usuário na nossa tabela auth_users
-    const { data: users, error } = await supabase.from("auth_users").select("*").eq("email", email).limit(1)
+    // Usar Supabase Auth nativo
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
 
     if (error) {
-      console.error("Database error:", error)
-      errorDisplay.textContent = "Erro ao conectar com o servidor."
-      errorDisplay.classList.add("show")
-      return
-    }
-
-    if (!users || users.length === 0) {
+      console.error("Login error:", error)
       errorDisplay.textContent = "Email ou senha inválidos."
       errorDisplay.classList.add("show")
       return
     }
 
-    const user = users[0]
-
-    // Por enquanto, vamos aceitar qualquer senha para teste
-    // Em produção, você deveria verificar o hash da senha
-    if (password.length < 1) {
-      errorDisplay.textContent = "Email ou senha inválidos."
-      errorDisplay.classList.add("show")
-      return
+    if (data.user) {
+      console.log("Login successful:", data.user.email)
+      // Redirecionar para a página principal
+      window.location.href = "index.html"
     }
-
-    // Simular login bem-sucedido salvando dados do usuário no localStorage
-    const userData = {
-      id: user.id,
-      email: user.email,
-      full_name: user.full_name,
-      role: user.role,
-      loginTime: new Date().toISOString(),
-    }
-
-    localStorage.setItem("wizardUser", JSON.stringify(userData))
-
-    // Redirecionar para a página principal
-    window.location.href = "index.html"
   } catch (error) {
     console.error("Login error:", error)
     errorDisplay.textContent = "Erro inesperado. Tente novamente."
