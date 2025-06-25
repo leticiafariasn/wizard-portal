@@ -182,24 +182,37 @@ body {
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .filter-select:focus {
   outline: none;
   border-color: #cf1c29;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 .filter-select:hover {
   border-color: #cf1c29;
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .filter-select option {
-  background: #3a3a3a;
+  background: #2a2a2a;
   color: white;
-  padding: 10px;
+  padding: 12px 15px;
+  border: none;
+  font-size: 14px;
+}
+
+.filter-select option:hover {
+  background: #3a3a3a;
+}
+
+.filter-select option:checked {
+  background: linear-gradient(135deg, #cf1c29 0%, #b01621 100%);
+  color: white;
 }
 
 .btn-add-event {

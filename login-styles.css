@@ -132,7 +132,6 @@ button[type="submit"] {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -157,6 +156,11 @@ button[type="submit"]:active {
   background: rgba(239, 68, 68, 0.1);
   border-radius: 10px;
   border: 1px solid rgba(239, 68, 68, 0.2);
+  display: none;
+}
+
+.error-msg.show {
+  display: block;
 }
 
 .back-link {
@@ -165,25 +169,36 @@ button[type="submit"]:active {
 }
 
 .back-link a {
-  color: #cf1c29;
+  color: #ffffff;
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 25px;
+  border: 2px solid #555;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .back-link a:hover {
-  color: #b01621;
-  background: rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: #cf1c29;
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  border-color: #cf1c29;
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.back-link a i {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.back-link a:hover i {
+  transform: translateX(-2px);
 }
 
 /* Loading Animation */
