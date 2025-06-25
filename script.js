@@ -20,25 +20,32 @@ const unitNames = {
 
 function checkUserLoggedIn() {
   supabase.auth.getUser().then(({ data: { user } }) => {
-    const loginBtn = document.getElementById("login-btn");
-    const userDropdown = document.getElementById("user-dropdown");
+    const loginBtn = document.getElementById("login-btn")
+    const userDropdown = document.getElementById("user-dropdown")
+    const userNameSpan = document.getElementById("user-name")
 
     if (user) {
-      loginBtn.style.display = "none";
-      userDropdown.style.display = "inline-block";
-      const username = user.user_metadata.full_name || user.email || "Usuário";
-      document.getElementById("user-name").textContent = `Olá, ${username.split(" ")[0]}`;
+      loginBtn.style.display = "none"
+      userDropdown.style.display = "inline-block"
+      const username = user.user_metadata.full_name || user.email || "Usuário"
+      userNameSpan.textContent = `Olá, ${username.split(" ")[0]}`
+
+      // Evento para toggle do menu
+      userNameSpan.addEventListener("click", () => {
+        const menu = document.getElementById("dropdown-menu")
+        menu.style.display = menu.style.display === "block" ? "none" : "block"
+      })
     } else {
-      loginBtn.style.display = "inline-block";
-      userDropdown.style.display = "none";
+      loginBtn.style.display = "inline-block"
+      userDropdown.style.display = "none"
     }
-  });
+  })
 }
 
 function logout() {
   supabase.auth.signOut().then(() => {
-    window.location.reload();
-  });
+    window.location.reload()
+  })
 }
 
 function goToLogin() {
