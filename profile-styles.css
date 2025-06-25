@@ -398,11 +398,13 @@ body {
   font-size: 14px;
 }
 
-.attendance-selector {
-  margin-left: 20px;
+/* Custom Dropdown Styles */
+.custom-dropdown {
+  position: relative;
+  min-width: 120px;
 }
 
-.attendance-dropdown {
+.dropdown-selected {
   padding: 12px 40px 12px 15px;
   border: 2px solid #cf1c29;
   border-radius: 10px;
@@ -410,80 +412,185 @@ body {
   color: white;
   font-size: 16px;
   font-weight: bold;
-  min-width: 80px;
-  text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cf1c29' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   box-shadow: 0 4px 15px rgba(207, 28, 41, 0.2);
 }
 
-.attendance-dropdown:focus {
-  outline: none;
-  border-color: #cf1c29;
-  box-shadow: 0 0 20px rgba(207, 28, 41, 0.4);
-  transform: translateY(-1px);
-}
-
-.attendance-dropdown:hover {
+.dropdown-selected:hover {
   border-color: #b01621;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(207, 28, 41, 0.3);
 }
 
-.attendance-dropdown option {
-  background: #2a2a2a;
-  color: white;
+.dropdown-selected i {
+  color: #cf1c29;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  border: 2px solid #cf1c29;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.dropdown-option {
   padding: 12px 15px;
-  border: none;
-  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #555;
+}
+
+.dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.dropdown-option:hover {
+  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  transform: translateX(5px);
+}
+
+.option-code {
   font-weight: bold;
+  font-size: 16px;
+  min-width: 25px;
+  text-align: center;
 }
 
-.attendance-dropdown option:hover {
-  background: #3a3a3a;
+.option-label {
+  font-size: 14px;
+  color: #cccccc;
 }
 
-.attendance-dropdown option:checked {
-  background: linear-gradient(135deg, #cf1c29 0%, #b01621 100%);
-  color: white;
+/* Specific colors for each attendance type */
+.dropdown-option.present {
+  border-left: 4px solid #10b981;
 }
 
-/* Specific styling for different attendance values */
-.attendance-dropdown option[value="P"] {
+.dropdown-option.present:hover {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
 }
 
-.attendance-dropdown option[value="F"] {
+.dropdown-option.present .option-code {
+  color: #10b981;
+}
+
+.dropdown-option.absent {
+  border-left: 4px solid #ef4444;
+}
+
+.dropdown-option.absent:hover {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
 }
 
-.attendance-dropdown option[value="R"] {
+.dropdown-option.absent .option-code {
+  color: #ef4444;
+}
+
+.dropdown-option.justified {
+  border-left: 4px solid #f59e0b;
+}
+
+.dropdown-option.justified:hover {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: white;
 }
 
-.attendance-dropdown option[value="E"] {
+.dropdown-option.justified .option-code {
+  color: #f59e0b;
+}
+
+.dropdown-option.excused {
+  border-left: 4px solid #8b5cf6;
+}
+
+.dropdown-option.excused:hover {
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: white;
 }
 
-.attendance-dropdown option[value="A"] {
+.dropdown-option.excused .option-code {
+  color: #8b5cf6;
+}
+
+.dropdown-option.authorized {
+  border-left: 4px solid #06b6d4;
+}
+
+.dropdown-option.authorized:hover {
   background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
   color: white;
 }
 
-.attendance-dropdown option[value="NA"] {
+.dropdown-option.authorized .option-code {
+  color: #06b6d4;
+}
+
+.dropdown-option.not-applicable {
+  border-left: 4px solid #6b7280;
+}
+
+.dropdown-option.not-applicable:hover {
   background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
   color: white;
+}
+
+.dropdown-option.not-applicable .option-code {
+  color: #6b7280;
+}
+
+/* Selected state styling */
+.custom-dropdown.selected-p .dropdown-selected {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-color: #10b981;
+}
+
+.custom-dropdown.selected-f .dropdown-selected {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-color: #ef4444;
+}
+
+.custom-dropdown.selected-r .dropdown-selected {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: #f59e0b;
+}
+
+.custom-dropdown.selected-e .dropdown-selected {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border-color: #8b5cf6;
+}
+
+.custom-dropdown.selected-a .dropdown-selected {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  border-color: #06b6d4;
+}
+
+.custom-dropdown.selected-na .dropdown-selected {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  border-color: #6b7280;
+}
+
+/* Remove old attendance-dropdown styles and replace with attendance-selector */
+.attendance-selector {
+  margin-left: 20px;
 }
 
 /* Student Dashboard */
