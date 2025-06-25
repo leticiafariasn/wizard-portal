@@ -159,11 +159,6 @@ function goToLogin() {
   window.location.href = "login.html"
 }
 
-// Adicionar função para ir ao perfil
-function goToProfile() {
-  window.location.href = "profile.html"
-}
-
 function filterByUnit() {
   selectedUnit = document.getElementById("unitFilter").value
   generateCalendar()

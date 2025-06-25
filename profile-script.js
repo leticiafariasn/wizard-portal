@@ -326,15 +326,42 @@ function getClassAttendanceContent() {
               </div>
             </div>
             <div class="attendance-selector">
-              <select class="attendance-dropdown" id="attendance-${student.id}" onchange="updateStudentAttendance(${student.id}, this.value)">
-                <option value="">-</option>
-                <option value="P">P</option>
-                <option value="F">F</option>
-                <option value="R">R</option>
-                <option value="E">E</option>
-                <option value="A">A</option>
-                <option value="NA">NA</option>
-              </select>
+              <div class="custom-dropdown" id="dropdown-${student.id}">
+                <div class="dropdown-selected" onclick="toggleDropdown(${student.id})">
+                  <span id="selected-${student.id}">-</span>
+                  <i class="ph ph-caret-down"></i>
+                </div>
+                <div class="dropdown-options" id="options-${student.id}">
+                  <div class="dropdown-option" data-value="" onclick="selectAttendance(${student.id}, '', '-')">
+                    <span class="option-code">-</span>
+                    <span class="option-label">Não marcado</span>
+                  </div>
+                  <div class="dropdown-option present" data-value="P" onclick="selectAttendance(${student.id}, 'P', 'P')">
+                    <span class="option-code">P</span>
+                    <span class="option-label">Presente</span>
+                  </div>
+                  <div class="dropdown-option absent" data-value="F" onclick="selectAttendance(${student.id}, 'F', 'F')">
+                    <span class="option-code">F</span>
+                    <span class="option-label">Falta</span>
+                  </div>
+                  <div class="dropdown-option justified" data-value="R" onclick="selectAttendance(${student.id}, 'R', 'R')">
+                    <span class="option-code">R</span>
+                    <span class="option-label">Reposição</span>
+                  </div>
+                  <div class="dropdown-option excused" data-value="E" onclick="selectAttendance(${student.id}, 'E', 'E')">
+                    <span class="option-code">E</span>
+                    <span class="option-label">Excusado</span>
+                  </div>
+                  <div class="dropdown-option authorized" data-value="A" onclick="selectAttendance(${student.id}, 'A', 'A')">
+                    <span class="option-code">A</span>
+                    <span class="option-label">Autorizado</span>
+                  </div>
+                  <div class="dropdown-option not-applicable" data-value="NA" onclick="selectAttendance(${student.id}, 'NA', 'NA')">
+                    <span class="option-code">NA</span>
+                    <span class="option-label">Não se aplica</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         `,
@@ -357,6 +384,69 @@ function getClassAttendanceContent() {
     </div>
   `
 }
+
+// Adicione estas novas funções para o dropdown customizado:
+
+function toggleDropdown(studentId) {
+  const dropdown = document.getElementById(`options-${studentId}`)
+  const selectedElement = document.getElementById(`dropdown-${studentId}`)
+  const allDropdowns = document.querySelectorAll(".dropdown-options")
+  const allSelected = document.querySelectorAll(".dropdown-selected")
+
+  // Fechar todos os outros dropdowns e remover classe open
+  allDropdowns.forEach((d) => {
+    if (d.id !== `options-${studentId}`) {
+      d.style.display = "none"
+    }
+  })
+
+  allSelected.forEach((s) => {
+    if (s.parentElement.id !== `dropdown-${studentId}`) {
+      s.classList.remove("open")
+    }
+  })
+
+  // Toggle do dropdown atual
+  if (dropdown.style.display === "block") {
+    dropdown.style.display = "none"
+    selectedElement.querySelector(".dropdown-selected").classList.remove("open")
+  } else {
+    dropdown.style.display = "block"
+    selectedElement.querySelector(".dropdown-selected").classList.add("open")
+  }
+}
+
+function selectAttendance(studentId, value, display) {
+  const selectedElement = document.getElementById(`selected-${studentId}`)
+  const dropdown = document.getElementById(`options-${studentId}`)
+  const dropdownContainer = document.getElementById(`dropdown-${studentId}`)
+  const dropdownSelected = dropdownContainer.querySelector(".dropdown-selected")
+
+  selectedElement.textContent = display
+  dropdown.style.display = "none"
+  dropdownSelected.classList.remove("open")
+
+  // Aplicar classe CSS baseada no valor selecionado
+  dropdownContainer.className = "custom-dropdown"
+  if (value) {
+    dropdownContainer.classList.add(`selected-${value.toLowerCase()}`)
+  }
+
+  // Salvar o valor para uso posterior
+  dropdownContainer.setAttribute("data-value", value)
+
+  updateStudentAttendance(studentId, value)
+}
+
+// Fechar dropdowns quando clicar fora
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".custom-dropdown")) {
+    const allDropdowns = document.querySelectorAll(".dropdown-options")
+    allDropdowns.forEach((dropdown) => {
+      dropdown.style.display = "none"
+    })
+  }
+})
 
 function getStudentDashboard() {
   const classData = classesData.find((c) => c.students.some((s) => s.id === selectedStudent))
