@@ -18,28 +18,56 @@ const unitNames = {
   "dom-luis": "Dom Luís",
 }
 
+const supabase = window.supabase
+
 function checkUserLoggedIn() {
   supabase.auth.getUser().then(({ data: { user } }) => {
     const loginBtn = document.getElementById("login-btn")
-    const userDropdown = document.getElementById("user-dropdown")
-    const userNameSpan = document.getElementById("user-name")
+    const userMenu = document.getElementById("user-menu")
+    const userButton = document.getElementById("userButton")
+    const addEventBtn = document.getElementById("addEventBtn")
 
     if (user) {
       loginBtn.style.display = "none"
-      userDropdown.style.display = "inline-block"
+      userMenu.style.display = "block"
+      
       const username = user.user_metadata.full_name || user.email || "Usuário"
-      userNameSpan.textContent = `Olá, ${username.split(" ")[0]}`
-
-      // Evento para toggle do menu
-      userNameSpan.addEventListener("click", () => {
-        const menu = document.getElementById("dropdown-menu")
-        menu.style.display = menu.style.display === "block" ? "none" : "block"
+      const firstName = username.split(" ")[0]
+      userButton.textContent = `Olá, ${firstName}`
+      
+      // Enable add event button for logged users
+      addEventBtn.disabled = false
+      addEventBtn.onclick = () => openAddEventModal()
+      
+      // Add click event to toggle dropdown
+      userButton.addEventListener("click", toggleUserDropdown)
+      
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!userMenu.contains(e.target)) {
+          closeUserDropdown()
+        }
       })
     } else {
-      loginBtn.style.display = "inline-block"
-      userDropdown.style.display = "none"
+      loginBtn.style.display = "flex"
+      userMenu.style.display = "none"
+      addEventBtn.disabled = true
+      addEventBtn.onclick = () => {
+        alert("Faça login para adicionar eventos.")
+        goToLogin()
+      }
     }
   })
+}
+
+function toggleUserDropdown() {
+  const dropdown = document.getElementById("userDropdown")
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block"
+}
+
+function closeUserDropdown() {
+  const dropdown = document.getElementById("userDropdown")
+  dropdown.style.display = "none"
 }
 
 function logout() {
@@ -63,8 +91,25 @@ function shouldShowEvent(event) {
 }
 
 function openAddEventModal() {
-  alert("Faça login para adicionar eventos.")
-  goToLogin()
+  supabase.auth.getUser().then(({ data: { user } }) => {
+    if (!user) {
+      alert("Faça login para adicionar eventos.")
+      goToLogin()
+      return
+    }
+    
+    // User is logged in, show the add event form
+    const modal = document.getElementById("eventModal")
+    const modalTitle = document.getElementById("modalTitle")
+    const eventForm = document.getElementById("eventForm")
+    const eventsList = document.getElementById("eventsList")
+    
+    modalTitle.textContent = "Adicionar Novo Evento"
+    eventForm.style.display = "block"
+    eventsList.style.display = "none"
+    
+    modal.style.display = "block"
+  })
 }
 
 function generateCalendar() {
