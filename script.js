@@ -32,6 +32,21 @@ const unitNames = {
   "dom-luis": "Dom Luís",
 }
 
+function checkUserLoggedIn() {
+  supabase.auth.getUser().then(({ data: { user } }) => {
+    const loginBtn = document.getElementById('login-btn');
+    const profileBtn = document.getElementById('profile-btn');
+
+    if (user) {
+      loginBtn.style.display = 'none';
+      profileBtn.style.display = 'inline-block';
+    } else {
+      loginBtn.style.display = 'inline-block';
+      profileBtn.style.display = 'none';
+    }
+  });
+}
+
 function goToLogin() {
   window.location.href = "login.html"
 }
@@ -291,3 +306,5 @@ window.onclick = (event) => {
 
 // Initialize calendar
 generateCalendar()
+
+document.addEventListener("DOMContentLoaded", checkUserLoggedIn);

@@ -1,133 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendário Wizard</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendário Wizard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/css/phosphor.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    window.supabase = supabase.createClient(
+      'https://evyjhdpzseecbeqxvuqw.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2eWpoZHB6c2VlY2JlcXh2dXF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MTA3NTQsImV4cCI6MjA2NjM4Njc1NH0.xhcKqch-fwtJ2QcpPM9kil9CYtkuhvaAtJJXuWt4iMo'
+    );
+  </script>
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <img src="img/wiz-logo.png" alt="Wizard by Pearson" class="logo">
-            <div>
-                <div class="title">Calendário Wizard</div>
-                <div class="subtitle">Eventos e Datas Comemorativas</div>
-            </div>
-        </div>
-        <div class="header-right">
-            <button class="btn-login" onclick="goToLogin()">
-                <span>👤</span>
-                Fazer Login
-            </button>
-        </div>
+  <div class="header">
+    <div class="header-left">
+      <img src="img/wiz-logo.png" alt="Wizard by Pearson" class="logo" />
+      <div>
+        <div class="title">Calendário Wizard</div>
+        <div class="subtitle">Eventos e Datas Comemorativas</div>
+      </div>
     </div>
 
-    <div class="controls-bar">
-        <div class="filter-section">
-            <div class="filter-group">
-                <label for="unitFilter">Unidade:</label>
-                <select id="unitFilter" class="filter-select" onchange="filterByUnit()">
-                    <option value="all">Todas as Unidades</option>
-                    <option value="fatima">Fátima</option>
-                    <option value="parangaba">Parangaba</option>
-                    <option value="washington">Washington Soares</option>
-                    <option value="eusebio">Eusébio</option>
-                    <option value="maracanaú">Maracanaú</option>
-                    <option value="bezerra">Bezerra</option>
-                    <option value="maraponga">Maraponga</option>
-                    <option value="dom-luis">Dom Luís</option>
-                </select>
-            </div>
-        </div>
-        <button class="btn-add-event" id="addEventBtn" onclick="openAddEventModal()" disabled>
-            <span>+</span>
-            Adicionar Evento
-        </button>
+    <div class="header-right" id="user-actions">
+      <button class="btn-login" id="login-btn" onclick="goToLogin()">
+        <i class="ph ph-user"></i>
+        Login
+      </button>
+      <a href="profile.html" class="btn-login" id="profile-btn" style="display: none;">
+        <i class="ph ph-user-circle"></i>
+        Perfil
+      </a>
     </div>
+  </div>
 
-    <div class="calendar-container">
-        <div class="calendar-header">
-            <button class="nav-button" onclick="previousMonth()">← Anterior</button>
-            <div class="month-year" id="monthYear"></div>
-            <button class="nav-button" onclick="nextMonth()">Próximo →</button>
-        </div>
-
-        <div class="calendar-grid" id="calendar">
-        </div>
-
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: #8b5cf6;"></div>
-                <span>Reuniões</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #10b981;"></div>
-                <span>Feriados</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #f59e0b;"></div>
-                <span>Treinamentos</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #ef4444;"></div>
-                <span>Comemorações</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #ec4899;"></div>
-                <span>Prazos</span>
-            </div>
-        </div>
+  <div class="controls-bar">
+    <div class="filter-section">
+      <div class="filter-group">
+        <label for="unitFilter">Unidade:</label>
+        <select id="unitFilter" class="filter-select" onchange="filterByUnit()">
+          <option value="all">Todas as Unidades</option>
+          <option value="fatima">Fátima</option>
+          <option value="parangaba">Parangaba</option>
+          <option value="washington">Washington Soares</option>
+          <option value="eusebio">Eusébio</option>
+          <option value="maracanaú">Maracanaú</option>
+          <option value="bezerra">Bezerra</option>
+          <option value="maraponga">Maraponga</option>
+          <option value="dom-luis">Dom Luís</option>
+        </select>
+      </div>
     </div>
+    <button class="btn-add-event" id="addEventBtn" onclick="openAddEventModal()" disabled>
+      <span>+</span>
+      Adicionar Evento
+    </button>
+  </div>
 
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle">Eventos do Dia</h2>
-            
-            <div class="event-form" id="eventForm">
-                <div class="form-group">
-                    <label for="eventTitle">Título do Evento:</label>
-                    <input type="text" id="eventTitle" placeholder="Digite o título do evento">
-                </div>
-                <div class="form-group">
-                    <label for="eventType">Tipo:</label>
-                    <select id="eventType">
-                        <option value="meeting">Reunião</option>
-                        <option value="holiday">Feriado</option>
-                        <option value="training">Treinamento</option>
-                        <option value="celebration">Comemoração</option>
-                        <option value="deadline">Prazo</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="eventUnit">Unidade:</label>
-                    <select id="eventUnit">
-                        <option value="all">Todas as Unidades</option>
-                        <option value="fatima">Fátima</option>
-                        <option value="parangaba">Parangaba</option>
-                        <option value="washington">Washington Soares</option>
-                        <option value="eusebio">Eusébio</option>
-                        <option value="maracanaú">Maracanaú</option>
-                        <option value="bezerra">Bezerra</option>
-                        <option value="maraponga">Maraponga</option>
-                        <option value="dom-luis">Dom Luís</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="eventDescription">Descrição:</label>
-                    <textarea id="eventDescription" rows="3" placeholder="Descrição do evento (opcional)"></textarea>
-                </div>
-                <button class="btn" id="addEventModalBtn" onclick="addEvent()">Adicionar Evento</button>
-                <div class="permission-denied" id="permissionDenied" style="display: none;">
-                    Você não tem permissão para adicionar eventos.
-                </div>
-            </div>
-
-            <div class="events-list" id="eventsList">
-            </div>
-        </div>
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button class="nav-button" onclick="previousMonth()">← Anterior</button>
+      <div class="month-year" id="monthYear"></div>
+      <button class="nav-button" onclick="nextMonth()">Próximo →</button>
     </div>
-    <script src="script.js"></script>
+    <div class="calendar-grid" id="calendar"></div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background: #8b5cf6;"></div>
+        <span>Reuniões</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #10b981;"></div>
+        <span>Feriados</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #f59e0b;"></div>
+        <span>Treinamentos</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #ef4444;"></div>
+        <span>Comemorações</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #ec4899;"></div>
+        <span>Prazos</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="eventModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle">Eventos do Dia</h2>
+
+      <div class="event-form" id="eventForm">
+        <div class="form-group">
+          <label for="eventTitle">Título do Evento:</label>
+          <input type="text" id="eventTitle" placeholder="Digite o título do evento">
+        </div>
+        <div class="form-group">
+          <label for="eventType">Tipo:</label>
+          <select id="eventType">
+            <option value="meeting">Reunião</option>
+            <option value="holiday">Feriado</option>
+            <option value="training">Treinamento</option>
+            <option value="celebration">Comemoração</option>
+            <option value="deadline">Prazo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="eventUnit">Unidade:</label>
+          <select id="eventUnit">
+            <option value="all">Todas as Unidades</option>
+            <option value="fatima">Fátima</option>
+            <option value="parangaba">Parangaba</option>
+            <option value="washington">Washington Soares</option>
+            <option value="eusebio">Eusébio</option>
+            <option value="maracanaú">Maracanaú</option>
+            <option value="bezerra">Bezerra</option>
+            <option value="maraponga">Maraponga</option>
+            <option value="dom-luis">Dom Luís</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="eventDescription">Descrição:</label>
+          <textarea id="eventDescription" rows="3" placeholder="Descrição do evento (opcional)"></textarea>
+        </div>
+        <button class="btn" id="addEventModalBtn" onclick="addEvent()">Adicionar Evento</button>
+        <div class="permission-denied" id="permissionDenied" style="display: none;">
+          Você não tem permissão para adicionar eventos.
+        </div>
+      </div>
+
+      <div class="events-list" id="eventsList"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
