@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Calendário Wizard</title>
+    <link rel="stylesheet" href="login-styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-section">
+                <img src="wizard-calendar-main/img/wizard-logo-full.png" alt="Wizard by Pearson" class="login-logo">
+            </div>
+            
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Login</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <span id="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login-submit">Entrar</button>
+                
+                <div class="admin-access">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="adminAccess">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="admin-label">Acesso admin</span>
+                </div>
+            </form>
+            
+            <div class="back-link">
+                <a href="index.html">← Voltar ao calendário</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="login-script.js"></script>
+</body>
+</html>
