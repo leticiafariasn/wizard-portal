@@ -1,3 +1,14 @@
+// Adicione esta função no início do arquivo:
+function waitForSupabase() {
+  return new Promise((resolve) => {
+    if (window.supabase) {
+      resolve(window.supabase)
+    } else {
+      setTimeout(() => waitForSupabase().then(resolve), 100)
+    }
+  })
+}
+
 let currentUser = null
 let currentSection = "frequencia"
 let selectedClass = null
@@ -20,6 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadClassesFromDatabase() {
   try {
     console.log("Loading classes from database...")
+
+    // Aguardar o Supabase estar disponível
+    const supabase = await waitForSupabase()
 
     // First, let's try a simple query to test connection
     const { data: testData, error: testError } = await supabase.from("classes").select("*").limit(1)
@@ -127,6 +141,9 @@ async function checkAuthAndLoadUser() {
   try {
     // Add a small delay to ensure DOM is fully loaded
     await new Promise((resolve) => setTimeout(resolve, 100))
+
+    // Aguardar o Supabase estar disponível
+    const supabase = await waitForSupabase()
 
     // Verificar se há usuário logado no Supabase Auth
     const {
@@ -779,6 +796,7 @@ function getDocumentosContent() {
 async function logout() {
   if (confirm("Tem certeza que deseja sair?")) {
     try {
+      const supabase = await waitForSupabase()
       await supabase.auth.signOut()
       window.location.href = "index.html"
     } catch (error) {

@@ -33,76 +33,90 @@ const unitNames = {
 
 const supabase = window.supabase
 
+// Adicione esta função no início do arquivo, após as declarações de variáveis:
+function waitForSupabase() {
+  return new Promise((resolve) => {
+    if (window.supabase) {
+      resolve(window.supabase)
+    } else {
+      setTimeout(() => waitForSupabase().then(resolve), 100)
+    }
+  })
+}
+
 // Atualizar a função checkUserLoggedIn() para usar Supabase Auth:
 
-function checkUserLoggedIn() {
+async function checkUserLoggedIn() {
   // Add a small delay to ensure DOM is fully loaded
-  setTimeout(async () => {
-    try {
-      // Verificar se há usuário logado no Supabase Auth
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser()
+  await new Promise((resolve) => setTimeout(resolve, 200))
 
-      const loginBtn = document.getElementById("login-btn")
-      const userMenu = document.getElementById("user-menu")
-      const userButton = document.getElementById("userButton")
-      const addEventBtn = document.getElementById("addEventBtn")
+  try {
+    // Aguardar o Supabase estar disponível
+    const supabase = await waitForSupabase()
 
-      if (user && !error) {
-        console.log("User is logged in:", user.email)
+    // Verificar se há usuário logado no Supabase Auth
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
 
-        // User is logged in - hide login button, show user menu
-        if (loginBtn) loginBtn.style.display = "none"
-        if (userMenu) userMenu.style.display = "block"
+    const loginBtn = document.getElementById("login-btn")
+    const userMenu = document.getElementById("user-menu")
+    const userButton = document.getElementById("userButton")
+    const addEventBtn = document.getElementById("addEventBtn")
 
-        const username = user.user_metadata?.full_name || user.email || "Usuário"
-        const firstName = username.split(" ")[0]
-        if (userButton) userButton.textContent = `Olá, ${firstName}`
+    if (user && !error) {
+      console.log("User is logged in:", user.email)
 
-        // Enable add event button for logged users
-        if (addEventBtn) {
-          addEventBtn.disabled = false
-          addEventBtn.onclick = () => openAddEventModal()
-        }
+      // User is logged in - hide login button, show user menu
+      if (loginBtn) loginBtn.style.display = "none"
+      if (userMenu) userMenu.style.display = "block"
 
-        // Remove any existing event listeners to avoid duplicates
-        if (userButton) {
-          userButton.removeEventListener("click", toggleUserDropdown)
-          // Add click event to toggle dropdown
-          userButton.addEventListener("click", toggleUserDropdown)
-        }
+      const username = user.user_metadata?.full_name || user.email || "Usuário"
+      const firstName = username.split(" ")[0]
+      if (userButton) userButton.textContent = `Olá, ${firstName}`
 
-        // Close dropdown when clicking outside
-        document.removeEventListener("click", handleOutsideClick)
-        document.addEventListener("click", handleOutsideClick)
-      } else {
-        console.log("User is not logged in")
-        // User is not logged in - show login button, hide user menu
-        if (loginBtn) loginBtn.style.display = "flex"
-        if (userMenu) userMenu.style.display = "none"
-
-        if (addEventBtn) {
-          addEventBtn.disabled = true
-          addEventBtn.onclick = () => {
-            alert("Faça login para adicionar eventos.")
-            goToLogin()
-          }
-        }
-
-        // Clean up event listeners
-        document.removeEventListener("click", handleOutsideClick)
+      // Enable add event button for logged users
+      if (addEventBtn) {
+        addEventBtn.disabled = false
+        addEventBtn.onclick = () => openAddEventModal()
       }
-    } catch (error) {
-      console.error("Error checking user:", error)
-      // On error, assume user is not logged in
-      const loginBtn = document.getElementById("login-btn")
-      const userMenu = document.getElementById("user-menu")
+
+      // Remove any existing event listeners to avoid duplicates
+      if (userButton) {
+        userButton.removeEventListener("click", toggleUserDropdown)
+        // Add click event to toggle dropdown
+        userButton.addEventListener("click", toggleUserDropdown)
+      }
+
+      // Close dropdown when clicking outside
+      document.removeEventListener("click", handleOutsideClick)
+      document.addEventListener("click", handleOutsideClick)
+    } else {
+      console.log("User is not logged in")
+      // User is not logged in - show login button, hide user menu
       if (loginBtn) loginBtn.style.display = "flex"
       if (userMenu) userMenu.style.display = "none"
+
+      if (addEventBtn) {
+        addEventBtn.disabled = true
+        addEventBtn.onclick = () => {
+          alert("Faça login para adicionar eventos.")
+          goToLogin()
+        }
+      }
+
+      // Clean up event listeners
+      document.removeEventListener("click", handleOutsideClick)
     }
-  }, 200) // Small delay to ensure everything is loaded
+  } catch (error) {
+    console.error("Error checking user:", error)
+    // On error, assume user is not logged in
+    const loginBtn = document.getElementById("login-btn")
+    const userMenu = document.getElementById("user-menu")
+    if (loginBtn) loginBtn.style.display = "flex"
+    if (userMenu) userMenu.style.display = "none"
+  }
 }
 
 function handleOutsideClick(e) {
@@ -132,6 +146,7 @@ function closeUserDropdown() {
 
 async function logout() {
   try {
+    const supabase = await waitForSupabase()
     await supabase.auth.signOut()
     window.location.reload()
   } catch (error) {
@@ -157,28 +172,34 @@ function shouldShowEvent(event) {
 // Atualizar a função openAddEventModal() para usar Supabase Auth:
 
 async function openAddEventModal() {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
+  try {
+    const supabase = await waitForSupabase()
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
 
-  if (!user || error) {
-    alert("Faça login para adicionar eventos.")
-    goToLogin()
-    return
+    if (!user || error) {
+      alert("Faça login para adicionar eventos.")
+      goToLogin()
+      return
+    }
+
+    // User is logged in, show the add event form
+    const modal = document.getElementById("eventModal")
+    const modalTitle = document.getElementById("modalTitle")
+    const eventForm = document.getElementById("eventForm")
+    const eventsList = document.getElementById("eventsList")
+
+    modalTitle.textContent = "Adicionar Novo Evento"
+    eventForm.style.display = "block"
+    eventsList.style.display = "none"
+
+    modal.style.display = "block"
+  } catch (error) {
+    console.error("Error opening add event modal:", error)
+    alert("Erro ao abrir modal. Tente novamente.")
   }
-
-  // User is logged in, show the add event form
-  const modal = document.getElementById("eventModal")
-  const modalTitle = document.getElementById("modalTitle")
-  const eventForm = document.getElementById("eventForm")
-  const eventsList = document.getElementById("eventsList")
-
-  modalTitle.textContent = "Adicionar Novo Evento"
-  eventForm.style.display = "block"
-  eventsList.style.display = "none"
-
-  modal.style.display = "block"
 }
 
 function generateCalendar() {

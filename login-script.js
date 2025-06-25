@@ -1,14 +1,12 @@
-// Import Supabase client
-const supabase = window.supabase
-
-function togglePassword() {
-  const passwordInput = document.getElementById("password")
-  const eyeIcon = document.getElementById("eye-icon")
-
-  const isHidden = passwordInput.type === "password"
-  passwordInput.type = isHidden ? "text" : "password"
-
-  eyeIcon.className = isHidden ? "ph ph-eye-slash" : "ph ph-eye"
+// Aguardar o Supabase estar disponível
+function waitForSupabase() {
+  return new Promise((resolve) => {
+    if (window.supabase) {
+      resolve(window.supabase)
+    } else {
+      setTimeout(() => waitForSupabase().then(resolve), 100)
+    }
+  })
 }
 
 async function loginUser() {
@@ -28,6 +26,9 @@ async function loginUser() {
 
   try {
     console.log("Attempting login with:", email)
+
+    // Aguardar o Supabase estar disponível
+    const supabase = await waitForSupabase()
 
     // Usar Supabase Auth nativo
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -66,6 +67,16 @@ async function loginUser() {
     errorDisplay.textContent = "Erro inesperado. Tente novamente."
     errorDisplay.classList.add("show")
   }
+}
+
+function togglePassword() {
+  const passwordInput = document.getElementById("password")
+  const eyeIcon = document.getElementById("eye-icon")
+
+  const isHidden = passwordInput.type === "password"
+  passwordInput.type = isHidden ? "text" : "password"
+
+  eyeIcon.className = isHidden ? "ph ph-eye-slash" : "ph ph-eye"
 }
 
 // Add enter key support
