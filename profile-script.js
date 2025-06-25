@@ -14,12 +14,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // Force load frequency section after a small delay to ensure DOM is ready
   setTimeout(() => {
     showSection("frequencia")
-  }, 100)
+  }, 500)
 })
 
 async function loadClassesFromDatabase() {
   try {
-    // Fetch classes with their students
+    console.log("Loading classes from database...")
+
+    // First, let's try a simple query to test connection
+    const { data: testData, error: testError } = await supabase.from("classes").select("*").limit(1)
+
+    if (testError) {
+      console.error("Test query error:", testError)
+      throw testError
+    }
+
+    console.log("Test query successful:", testData)
+
+    // Now fetch classes with their students
     const { data: classes, error: classError } = await supabase
       .from("classes")
       .select(`
@@ -34,21 +46,49 @@ async function loadClassesFromDatabase() {
 
     if (classError) {
       console.error("Error fetching classes:", classError)
-      return
+      // Fallback: try to get classes without students first
+      const { data: classesOnly, error: classOnlyError } = await supabase
+        .from("classes")
+        .select("id, name")
+        .order("name")
+
+      if (classOnlyError) {
+        throw classOnlyError
+      }
+
+      // Then get students separately
+      const { data: students, error: studentsError } = await supabase.from("students").select("id, name, class_id")
+
+      if (studentsError) {
+        throw studentsError
+      }
+
+      // Combine the data manually
+      classesData = classesOnly.map((classItem) => ({
+        id: classItem.id,
+        name: classItem.name,
+        students: students
+          .filter((student) => student.class_id === classItem.id)
+          .map((student) => ({
+            id: student.id,
+            name: student.name,
+            attendance: {},
+          })),
+      }))
+    } else {
+      // Transform data to match our existing structure
+      classesData = classes.map((classItem) => ({
+        id: classItem.id,
+        name: classItem.name,
+        students: (classItem.students || []).map((student) => ({
+          id: student.id,
+          name: student.name,
+          attendance: {},
+        })),
+      }))
     }
 
-    // Transform data to match our existing structure
-    classesData = classes.map((classItem) => ({
-      id: classItem.id,
-      name: classItem.name,
-      students: classItem.students.map((student) => ({
-        id: student.id,
-        name: student.name,
-        attendance: {},
-      })),
-    }))
-
-    console.log("Classes loaded from database:", classesData)
+    console.log("Classes loaded successfully:", classesData)
 
     // Refresh the content if we're on the frequency section
     if (currentSection === "frequencia") {
@@ -56,6 +96,28 @@ async function loadClassesFromDatabase() {
     }
   } catch (error) {
     console.error("Error loading classes:", error)
+
+    // Show error message to user
+    const contentBody = document.getElementById("contentBody")
+    if (contentBody) {
+      contentBody.innerHTML = `
+        <div class="section-content">
+          <h3 class="section-title">
+            <i class="ph ph-warning"></i>
+            Erro ao Carregar Dados
+          </h3>
+          <div style="text-align: center; padding: 40px;">
+            <i class="ph ph-warning-circle" style="font-size: 48px; color: #ef4444; margin-bottom: 20px;"></i>
+            <p style="color: #ef4444; margin-bottom: 10px;">Não foi possível carregar os dados das turmas.</p>
+            <p style="color: #cccccc; font-size: 14px;">Erro: ${error.message || "Erro desconhecido"}</p>
+            <button class="btn-action" onclick="loadClassesFromDatabase()" style="margin-top: 20px;">
+              <i class="ph ph-arrow-clockwise"></i>
+              Tentar Novamente
+            </button>
+          </div>
+        </div>
+      `
+    }
   }
 }
 
