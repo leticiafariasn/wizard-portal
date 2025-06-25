@@ -59,8 +59,8 @@ async function loginUser() {
 
     if (data.user) {
       console.log("Login successful:", data.user.email)
-      // Redirecionar para a página principal
-      window.location.href = "index.html"
+      // Redirecionar para a página de perfil em vez do calendário
+      window.location.href = "profile.html"
     }
   } catch (error) {
     console.error("Unexpected login error:", error)
