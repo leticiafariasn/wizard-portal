@@ -6,7 +6,7 @@
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: white;
   min-height: 100vh;
   display: flex;
@@ -21,11 +21,12 @@ body {
 }
 
 .login-card {
-  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  border-radius: 25px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
   text-align: center;
+  border: 1px solid #333;
 }
 
 .logo-section {
@@ -35,6 +36,7 @@ body {
 .login-logo {
   max-width: 250px;
   height: auto;
+  filter: brightness(1.2);
 }
 
 .login-form {
@@ -48,25 +50,26 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #cccccc;
-  font-weight: 500;
+  color: #e0e6ff;
+  font-weight: 600;
   font-size: 14px;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #444;
-  border-radius: 8px;
-  background: #1a1a1a;
+  padding: 15px 16px;
+  border: 2px solid #333;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: white;
   font-size: 16px;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #e31e24;
+  border-color: #cf1c29;
+  box-shadow: 0 0 15px rgba(207, 28, 41, 0.3);
 }
 
 .password-input {
@@ -75,108 +78,65 @@ body {
 
 .toggle-password {
   position: absolute;
-  right: 12px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: #cccccc;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
+  transition: color 0.3s ease;
 }
 
 .toggle-password:hover {
-  color: #e31e24;
+  color: #cf1c29;
 }
 
 button[type="submit"] {
   width: 100%;
-  padding: 10px;
-  background-color: #1a73e8;
+  padding: 15px;
+  background: linear-gradient(135deg, #cf1c29 0%, #b01621 100%);
   color: white;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 1rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(207, 28, 41, 0.3);
+  margin-bottom: 15px;
 }
 
 button[type="submit"]:hover {
-  background-color: #155bc1;
+  background: linear-gradient(135deg, #b01621 0%, #9a1419 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(207, 28, 41, 0.4);
 }
 
-.admin-access {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 30px;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #444;
-  transition: 0.3s;
-  border-radius: 24px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.3s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #e31e24;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.admin-label {
-  color: #cccccc;
+.error-msg {
+  color: #ef4444;
   font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 500;
 }
 
 .back-link {
   text-align: center;
+  margin-top: 20px;
 }
 
 .back-link a {
-  color: #e31e24;
+  color: #cf1c29;
   text-decoration: none;
   font-size: 14px;
+  font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .back-link a:hover {
-  color: #c41e24;
+  color: #b01621;
 }
 
 @media (max-width: 480px) {

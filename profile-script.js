@@ -1,7 +1,8 @@
 let currentUser = null
 let currentSection = "frequencia"
-\
-const supabase = /* initialize supabase client here */; // Declare supabase variable
+
+// Initialize supabase - use the same instance as other files
+const supabase = window.supabase
 
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function checkAuthAndLoadUser() {
   try {
+    // Add a small delay to ensure supabase is fully loaded
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
     const {
       data: { user },
       error,
@@ -23,6 +27,7 @@ async function checkAuthAndLoadUser() {
     }
 
     if (!user) {
+      console.log("No user found, redirecting to login")
       redirectToLogin()
       return
     }
@@ -35,6 +40,7 @@ async function checkAuthAndLoadUser() {
       role: user.user_metadata.role || "Professor",
     }
 
+    console.log("User authenticated:", currentUser.username)
     document.getElementById("userName").textContent = currentUser.username
     document.getElementById("userRole").textContent = currentUser.role
   } catch (error) {
@@ -44,7 +50,7 @@ async function checkAuthAndLoadUser() {
 }
 
 function redirectToLogin() {
-  alert("Você precisa estar logado para acessar esta página.")
+  console.log("Redirecting to login...")
   window.location.href = "login.html"
 }
 

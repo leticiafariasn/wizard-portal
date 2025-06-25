@@ -34,52 +34,79 @@ const unitNames = {
 const supabase = window.supabase
 
 function checkUserLoggedIn() {
-  supabase.auth.getUser().then(({ data: { user } }) => {
-    const loginBtn = document.getElementById("login-btn")
-    const userMenu = document.getElementById("user-menu")
-    const userButton = document.getElementById("userButton")
-    const addEventBtn = document.getElementById("addEventBtn")
+  // Add a small delay to ensure DOM is fully loaded
+  setTimeout(async () => {
+    try {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser()
 
-    if (user) {
-      // User is logged in - hide login button, show user menu
-      loginBtn.style.display = "none"
-      userMenu.style.display = "block"
+      const loginBtn = document.getElementById("login-btn")
+      const userMenu = document.getElementById("user-menu")
+      const userButton = document.getElementById("userButton")
+      const addEventBtn = document.getElementById("addEventBtn")
 
-      const username = user.user_metadata.full_name || user.email || "Usuário"
-      const firstName = username.split(" ")[0]
-      userButton.textContent = `Olá, ${firstName}`
-
-      // Enable add event button for logged users
-      addEventBtn.disabled = false
-      addEventBtn.onclick = () => openAddEventModal()
-
-      // Remove any existing event listeners to avoid duplicates
-      userButton.removeEventListener("click", toggleUserDropdown)
-      // Add click event to toggle dropdown
-      userButton.addEventListener("click", toggleUserDropdown)
-
-      // Close dropdown when clicking outside
-      document.removeEventListener("click", handleOutsideClick)
-      document.addEventListener("click", handleOutsideClick)
-    } else {
-      // User is not logged in - show login button, hide user menu
-      loginBtn.style.display = "flex"
-      userMenu.style.display = "none"
-      addEventBtn.disabled = true
-      addEventBtn.onclick = () => {
-        alert("Faça login para adicionar eventos.")
-        goToLogin()
+      if (error) {
+        console.error("Auth error:", error)
+        // Show login button on error
+        if (loginBtn) loginBtn.style.display = "flex"
+        if (userMenu) userMenu.style.display = "none"
+        return
       }
-      
-      // Clean up event listeners
-      document.removeEventListener("click", handleOutsideClick)
+
+      if (user) {
+        console.log("User is logged in:", user.email)
+        // User is logged in - hide login button, show user menu
+        if (loginBtn) loginBtn.style.display = "none"
+        if (userMenu) userMenu.style.display = "block"
+
+        const username = user.user_metadata.full_name || user.email || "Usuário"
+        const firstName = username.split(" ")[0]
+        if (userButton) userButton.textContent = `Olá, ${firstName}`
+
+        // Enable add event button for logged users
+        if (addEventBtn) {
+          addEventBtn.disabled = false
+          addEventBtn.onclick = () => openAddEventModal()
+        }
+
+        // Remove any existing event listeners to avoid duplicates
+        if (userButton) {
+          userButton.removeEventListener("click", toggleUserDropdown)
+          // Add click event to toggle dropdown
+          userButton.addEventListener("click", toggleUserDropdown)
+        }
+
+        // Close dropdown when clicking outside
+        document.removeEventListener("click", handleOutsideClick)
+        document.addEventListener("click", handleOutsideClick)
+      } else {
+        console.log("User is not logged in")
+        // User is not logged in - show login button, hide user menu
+        if (loginBtn) loginBtn.style.display = "flex"
+        if (userMenu) userMenu.style.display = "none"
+
+        if (addEventBtn) {
+          addEventBtn.disabled = true
+          addEventBtn.onclick = () => {
+            alert("Faça login para adicionar eventos.")
+            goToLogin()
+          }
+        }
+
+        // Clean up event listeners
+        document.removeEventListener("click", handleOutsideClick)
+      }
+    } catch (error) {
+      console.error("Error checking user:", error)
+      // On error, assume user is not logged in
+      const loginBtn = document.getElementById("login-btn")
+      const userMenu = document.getElementById("user-menu")
+      if (loginBtn) loginBtn.style.display = "flex"
+      if (userMenu) userMenu.style.display = "none"
     }
-  }).catch((error) => {
-    console.error("Error checking user:", error)
-    // On error, assume user is not logged in
-    document.getElementById("login-btn").style.display = "flex"
-    document.getElementById("user-menu").style.display = "none"
-  })
+  }, 200) // Small delay to ensure everything is loaded
 }
 
 function handleOutsideClick(e) {
@@ -92,13 +119,17 @@ function handleOutsideClick(e) {
 function toggleUserDropdown(e) {
   e.stopPropagation() // Prevent event bubbling
   const dropdown = document.getElementById("userDropdown")
-  const isVisible = dropdown.style.display === "block"
-  dropdown.style.display = isVisible ? "none" : "block"
+  if (dropdown) {
+    const isVisible = dropdown.style.display === "block"
+    dropdown.style.display = isVisible ? "none" : "block"
+  }
 }
 
 function closeUserDropdown() {
   const dropdown = document.getElementById("userDropdown")
-  dropdown.style.display = "none"
+  if (dropdown) {
+    dropdown.style.display = "none"
+  }
 }
 
 function logout() {
