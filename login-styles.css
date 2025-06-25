@@ -89,23 +89,21 @@ body {
   color: #e31e24;
 }
 
-.btn-login-submit {
+button[type="submit"] {
   width: 100%;
-  background: #e31e24;
+  padding: 10px;
+  background-color: #1a73e8;
   color: white;
   border: none;
-  padding: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
+  border-radius: 4px;
   font-weight: bold;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.btn-login-submit:hover {
-  background: #c41e24;
-  transform: translateY(-2px);
+button[type="submit"]:hover {
+  background-color: #155bc1;
 }
 
 .admin-access {

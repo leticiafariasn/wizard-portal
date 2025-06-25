@@ -1,14 +1,11 @@
 function togglePassword() {
-  const passwordInput = document.getElementById("password")
-  const eyeIcon = document.getElementById("eye-icon")
+  const passwordInput = document.getElementById("password");
+  const eyeIcon = document.getElementById("eye-icon");
 
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text"
-    eyeIcon.textContent = "🙈"
-  } else {
-    passwordInput.type = "password"
-    eyeIcon.textContent = "👁️"
-  }
+  const isHidden = passwordInput.type === "password";
+  passwordInput.type = isHidden ? "text" : "password";
+
+  eyeIcon.className = isHidden ? "ph ph-eye-slash" : "ph ph-eye";
 }
 
 // 3. Nova função de login real com Supabase

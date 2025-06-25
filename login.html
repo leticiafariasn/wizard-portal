@@ -6,16 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - Calendário Wizard</title>
   <link rel="stylesheet" href="login-styles.css" />
-
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
   <script>
     window.supabase = supabase.createClient(
       'https://evyjhdpzseecbeqxvuqw.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2eWpoZHB6c2VlY2JlcXh2dXF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4MTA3NTQsImV4cCI6MjA2NjM4Njc1NH0.xhcKqch-fwtJ2QcpPM9kil9CYtkuhvaAtJJXuWt4iMo'
     );
   </script>
-
   <script src="login-script.js" defer></script>
 </head>
 
@@ -36,9 +34,10 @@
           <label for="password">Senha</label>
           <div class="password-input">
             <input type="password" id="password" name="password" required />
-            <button type="button" class="toggle-password" onclick="togglePassword()">
-              <span id="eye-icon">👁️</span>
-            </button>
+<button type="button" class="toggle-password" onclick="togglePassword()">
+  <i id="eye-icon" class="ph ph-eye"></i>
+</button>
+
           </div>
         </div>
 
