@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
 async function checkAuthAndLoadUser() {
   try {
     // Add a small delay to ensure supabase is fully loaded
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     const {
       data: { user },
       error,
@@ -106,7 +106,10 @@ function loadSectionContent(section) {
 function getFrequenciaContent() {
   return `
         <div class="section-content">
-            <h3 class="section-title">Registro de Frequência</h3>
+            <h3 class="section-title">
+                <i class="ph ph-chart-bar"></i>
+                Registro de Frequência
+            </h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -148,7 +151,10 @@ function getFrequenciaContent() {
 function getBoletimContent() {
   return `
         <div class="section-content">
-            <h3 class="section-title">Notas dos Alunos</h3>
+            <h3 class="section-title">
+                <i class="ph ph-clipboard-text"></i>
+                Notas dos Alunos
+            </h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -194,7 +200,10 @@ function getBoletimContent() {
 function getReposicoesContent() {
   return `
         <div class="section-content">
-            <h3 class="section-title">Aulas de Reposição</h3>
+            <h3 class="section-title">
+                <i class="ph ph-arrow-clockwise"></i>
+                Aulas de Reposição
+            </h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -229,7 +238,10 @@ function getReposicoesContent() {
 function getBancoHorasContent() {
   return `
         <div class="section-content">
-            <h3 class="section-title">Controle de Horas</h3>
+            <h3 class="section-title">
+                <i class="ph ph-clock"></i>
+                Controle de Horas
+            </h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -264,11 +276,15 @@ function getBancoHorasContent() {
 function getDocumentosContent() {
   return `
         <div class="section-content">
-            <h3 class="section-title">Documentos e Atestados</h3>
+            <h3 class="section-title">
+                <i class="ph ph-folder"></i>
+                Documentos e Atestados
+            </h3>
             <div style="margin-bottom: 20px;">
                 <input type="file" id="fileUpload" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                 <button class="btn-action" onclick="document.getElementById('fileUpload').click();">
-                    📎 Enviar Documento
+                    <i class="ph ph-paperclip"></i>
+                    Enviar Documento
                 </button>
             </div>
             <table class="data-table">
@@ -288,8 +304,9 @@ function getDocumentosContent() {
                         <td>Atestado</td>
                         <td>Prof. Maria</td>
                         <td>
-                            <button class="btn-action" style="padding: 5px 10px; font-size: 12px;">
-                                👁️ Visualizar
+                            <button class="btn-action" style="padding: 8px 12px; font-size: 12px;">
+                                <i class="ph ph-eye"></i>
+                                Visualizar
                             </button>
                         </td>
                     </tr>
@@ -299,8 +316,9 @@ function getDocumentosContent() {
                         <td>Certificado</td>
                         <td>Prof. João</td>
                         <td>
-                            <button class="btn-action" style="padding: 5px 10px; font-size: 12px;">
-                                👁️ Visualizar
+                            <button class="btn-action" style="padding: 8px 12px; font-size: 12px;">
+                                <i class="ph ph-eye"></i>
+                                Visualizar
                             </button>
                         </td>
                     </tr>

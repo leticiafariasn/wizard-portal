@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Calendário Wizard</title>
     <link rel="stylesheet" href="profile-styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/css/phosphor.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
       window.supabase = supabase.createClient(
@@ -27,34 +28,34 @@
             
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" onclick="showSection('frequencia')">
-                    <span class="nav-icon">📊</span>
+                    <i class="ph ph-chart-bar nav-icon"></i>
                     <span class="nav-text">Frequência</span>
                 </a>
                 <a href="#" class="nav-item" onclick="showSection('boletim')">
-                    <span class="nav-icon">📋</span>
+                    <i class="ph ph-clipboard-text nav-icon"></i>
                     <span class="nav-text">Boletim</span>
                 </a>
                 <a href="#" class="nav-item" onclick="showSection('reposicoes')">
-                    <span class="nav-icon">🔄</span>
+                    <i class="ph ph-arrow-clockwise nav-icon"></i>
                     <span class="nav-text">Reposições</span>
                 </a>
                 <a href="#" class="nav-item" onclick="showSection('banco-horas')">
-                    <span class="nav-icon">⏰</span>
+                    <i class="ph ph-clock nav-icon"></i>
                     <span class="nav-text">Banco de Horas</span>
                 </a>
                 <a href="#" class="nav-item" onclick="showSection('documentos')">
-                    <span class="nav-icon">📁</span>
+                    <i class="ph ph-folder nav-icon"></i>
                     <span class="nav-text">Documentos</span>
                 </a>
             </nav>
             
             <div class="sidebar-footer">
                 <a href="index.html" class="nav-item">
-                    <span class="nav-icon">🏠</span>
+                    <i class="ph ph-house nav-icon"></i>
                     <span class="nav-text">Calendário</span>
                 </a>
                 <a href="#" class="nav-item" onclick="logout()">
-                    <span class="nav-icon">🚪</span>
+                    <i class="ph ph-sign-out nav-icon"></i>
                     <span class="nav-text">Sair</span>
                 </a>
             </div>
@@ -65,7 +66,10 @@
             <div class="content-header">
                 <h1 id="sectionTitle">Frequência</h1>
                 <div class="header-actions">
-                    <button class="btn-action" id="actionButton">Nova Entrada</button>
+                    <button class="btn-action" id="actionButton">
+                        <i class="ph ph-plus"></i>
+                        Nova Entrada
+                    </button>
                 </div>
             </div>
             
