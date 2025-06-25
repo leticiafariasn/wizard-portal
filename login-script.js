@@ -1,5 +1,3 @@
-
-
 function togglePassword() {
   const passwordInput = document.getElementById("password")
   const eyeIcon = document.getElementById("eye-icon")
