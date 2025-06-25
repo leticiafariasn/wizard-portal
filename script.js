@@ -33,35 +33,29 @@ const unitNames = {
 
 const supabase = window.supabase
 
+// Atualizar a função checkUserLoggedIn() para usar localStorage ao invés do Supabase Auth
+
 function checkUserLoggedIn() {
   // Add a small delay to ensure DOM is fully loaded
   setTimeout(async () => {
     try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser()
+      // Verificar se há usuário logado no localStorage
+      const storedUser = localStorage.getItem("wizardUser")
 
       const loginBtn = document.getElementById("login-btn")
       const userMenu = document.getElementById("user-menu")
       const userButton = document.getElementById("userButton")
       const addEventBtn = document.getElementById("addEventBtn")
 
-      if (error) {
-        console.error("Auth error:", error)
-        // Show login button on error
-        if (loginBtn) loginBtn.style.display = "flex"
-        if (userMenu) userMenu.style.display = "none"
-        return
-      }
-
-      if (user) {
+      if (storedUser) {
+        const user = JSON.parse(storedUser)
         console.log("User is logged in:", user.email)
+
         // User is logged in - hide login button, show user menu
         if (loginBtn) loginBtn.style.display = "none"
         if (userMenu) userMenu.style.display = "block"
 
-        const username = user.user_metadata.full_name || user.email || "Usuário"
+        const username = user.full_name || user.email || "Usuário"
         const firstName = username.split(" ")[0]
         if (userButton) userButton.textContent = `Olá, ${firstName}`
 
@@ -132,10 +126,11 @@ function closeUserDropdown() {
   }
 }
 
+// Atualizar a função logout() para limpar localStorage
+
 function logout() {
-  supabase.auth.signOut().then(() => {
-    window.location.reload()
-  })
+  localStorage.removeItem("wizardUser")
+  window.location.reload()
 }
 
 function goToLogin() {
@@ -152,26 +147,28 @@ function shouldShowEvent(event) {
   return event.unit === selectedUnit || event.unit === "all"
 }
 
+// Atualizar a função openAddEventModal() para verificar localStorage
+
 function openAddEventModal() {
-  supabase.auth.getUser().then(({ data: { user } }) => {
-    if (!user) {
-      alert("Faça login para adicionar eventos.")
-      goToLogin()
-      return
-    }
+  const storedUser = localStorage.getItem("wizardUser")
 
-    // User is logged in, show the add event form
-    const modal = document.getElementById("eventModal")
-    const modalTitle = document.getElementById("modalTitle")
-    const eventForm = document.getElementById("eventForm")
-    const eventsList = document.getElementById("eventsList")
+  if (!storedUser) {
+    alert("Faça login para adicionar eventos.")
+    goToLogin()
+    return
+  }
 
-    modalTitle.textContent = "Adicionar Novo Evento"
-    eventForm.style.display = "block"
-    eventsList.style.display = "none"
+  // User is logged in, show the add event form
+  const modal = document.getElementById("eventModal")
+  const modalTitle = document.getElementById("modalTitle")
+  const eventForm = document.getElementById("eventForm")
+  const eventsList = document.getElementById("eventsList")
 
-    modal.style.display = "block"
-  })
+  modalTitle.textContent = "Adicionar Novo Evento"
+  eventForm.style.display = "block"
+  eventsList.style.display = "none"
+
+  modal.style.display = "block"
 }
 
 function generateCalendar() {
