@@ -3,7 +3,20 @@ const events = JSON.parse(localStorage.getItem("wizardEvents")) || {}
 let selectedDate = null
 let selectedUnit = "all"
 
-const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+const monthNames = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+]
 const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
 
 const unitNames = {
@@ -28,27 +41,28 @@ function checkUserLoggedIn() {
     const addEventBtn = document.getElementById("addEventBtn")
 
     if (user) {
+      // User is logged in - hide login button, show user menu
       loginBtn.style.display = "none"
       userMenu.style.display = "block"
-      
+
       const username = user.user_metadata.full_name || user.email || "Usuário"
       const firstName = username.split(" ")[0]
       userButton.textContent = `Olá, ${firstName}`
-      
+
       // Enable add event button for logged users
       addEventBtn.disabled = false
       addEventBtn.onclick = () => openAddEventModal()
-      
+
+      // Remove any existing event listeners to avoid duplicates
+      userButton.removeEventListener("click", toggleUserDropdown)
       // Add click event to toggle dropdown
       userButton.addEventListener("click", toggleUserDropdown)
-      
+
       // Close dropdown when clicking outside
-      document.addEventListener("click", (e) => {
-        if (!userMenu.contains(e.target)) {
-          closeUserDropdown()
-        }
-      })
+      document.removeEventListener("click", handleOutsideClick)
+      document.addEventListener("click", handleOutsideClick)
     } else {
+      // User is not logged in - show login button, hide user menu
       loginBtn.style.display = "flex"
       userMenu.style.display = "none"
       addEventBtn.disabled = true
@@ -56,13 +70,30 @@ function checkUserLoggedIn() {
         alert("Faça login para adicionar eventos.")
         goToLogin()
       }
+      
+      // Clean up event listeners
+      document.removeEventListener("click", handleOutsideClick)
     }
+  }).catch((error) => {
+    console.error("Error checking user:", error)
+    // On error, assume user is not logged in
+    document.getElementById("login-btn").style.display = "flex"
+    document.getElementById("user-menu").style.display = "none"
   })
 }
 
-function toggleUserDropdown() {
+function handleOutsideClick(e) {
+  const userMenu = document.getElementById("user-menu")
+  if (userMenu && !userMenu.contains(e.target)) {
+    closeUserDropdown()
+  }
+}
+
+function toggleUserDropdown(e) {
+  e.stopPropagation() // Prevent event bubbling
   const dropdown = document.getElementById("userDropdown")
-  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block"
+  const isVisible = dropdown.style.display === "block"
+  dropdown.style.display = isVisible ? "none" : "block"
 }
 
 function closeUserDropdown() {
@@ -97,17 +128,17 @@ function openAddEventModal() {
       goToLogin()
       return
     }
-    
+
     // User is logged in, show the add event form
     const modal = document.getElementById("eventModal")
     const modalTitle = document.getElementById("modalTitle")
     const eventForm = document.getElementById("eventForm")
     const eventsList = document.getElementById("eventsList")
-    
+
     modalTitle.textContent = "Adicionar Novo Evento"
     eventForm.style.display = "block"
     eventsList.style.display = "none"
-    
+
     modal.style.display = "block"
   })
 }
@@ -289,7 +320,8 @@ function displayEvents() {
         eventsList.appendChild(eventItem)
       })
     } else {
-      eventsList.innerHTML = '<p style="text-align: center; color: #666;">Nenhum evento para a unidade selecionada nesta data.</p>'
+      eventsList.innerHTML =
+        '<p style="text-align: center; color: #666;">Nenhum evento para a unidade selecionada nesta data.</p>'
     }
   } else {
     eventsList.innerHTML = '<p style="text-align: center; color: #666;">Nenhum evento nesta data.</p>'

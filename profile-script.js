@@ -1,34 +1,68 @@
 let currentUser = null
 let currentSection = "frequencia"
+\
+const supabase = /* initialize supabase client here */; // Declare supabase variable
 
-// Inicializar página
+// Initialize page
 document.addEventListener("DOMContentLoaded", () => {
-  loadUserData()
+  checkAuthAndLoadUser()
   showSection("frequencia")
 })
 
-function loadUserData() {
-  const userData = localStorage.getItem("wizardUser")
-  if (!userData) {
-    window.location.href = "login.html"
-    return
-  }
+async function checkAuthAndLoadUser() {
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
 
-  currentUser = JSON.parse(userData)
-  document.getElementById("userName").textContent = currentUser.username
-  document.getElementById("userRole").textContent = currentUser.role
+    if (error) {
+      console.error("Auth error:", error)
+      redirectToLogin()
+      return
+    }
+
+    if (!user) {
+      redirectToLogin()
+      return
+    }
+
+    // User is authenticated, load their data
+    currentUser = {
+      id: user.id,
+      email: user.email,
+      username: user.user_metadata.full_name || user.email || "Usuário",
+      role: user.user_metadata.role || "Professor",
+    }
+
+    document.getElementById("userName").textContent = currentUser.username
+    document.getElementById("userRole").textContent = currentUser.role
+  } catch (error) {
+    console.error("Error checking authentication:", error)
+    redirectToLogin()
+  }
+}
+
+function redirectToLogin() {
+  alert("Você precisa estar logado para acessar esta página.")
+  window.location.href = "login.html"
 }
 
 function showSection(section) {
   currentSection = section
 
-  // Atualizar navegação ativa
+  // Update active navigation
   document.querySelectorAll(".nav-item").forEach((item) => {
     item.classList.remove("active")
   })
-  event.target.closest(".nav-item").classList.add("active")
 
-  // Atualizar título e conteúdo
+  // Find the clicked nav item and make it active
+  const clickedItem = event?.target?.closest(".nav-item")
+  if (clickedItem) {
+    clickedItem.classList.add("active")
+  }
+
+  // Update title and content
   const titles = {
     frequencia: "Frequência",
     boletim: "Boletim",
@@ -270,9 +304,15 @@ function getDocumentosContent() {
     `
 }
 
-function logout() {
+async function logout() {
   if (confirm("Tem certeza que deseja sair?")) {
-    localStorage.removeItem("wizardUser")
-    window.location.href = "index.html"
+    try {
+      await supabase.auth.signOut()
+      window.location.href = "index.html"
+    } catch (error) {
+      console.error("Error signing out:", error)
+      // Even if there's an error, redirect to home
+      window.location.href = "index.html"
+    }
   }
 }
