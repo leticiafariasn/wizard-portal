@@ -2,40 +2,7 @@ let currentUser = null
 let currentSection = "frequencia"
 let selectedClass = null
 let selectedStudent = null
-
-// Mock data for classes and students
-const mockClasses = [
-  {
-    id: 1,
-    name: "T2A TQ 18",
-    students: [
-      { id: 1, name: "João Silva", attendance: {} },
-      { id: 2, name: "Maria Santos", attendance: {} },
-      { id: 3, name: "Pedro Costa", attendance: {} },
-      { id: 4, name: "Ana Oliveira", attendance: {} },
-      { id: 5, name: "Carlos Lima", attendance: {} },
-    ],
-  },
-  {
-    id: 2,
-    name: "T3B AV 19",
-    students: [
-      { id: 6, name: "Fernanda Silva", attendance: {} },
-      { id: 7, name: "Roberto Santos", attendance: {} },
-      { id: 8, name: "Juliana Costa", attendance: {} },
-    ],
-  },
-  {
-    id: 3,
-    name: "T1C IN 20",
-    students: [
-      { id: 9, name: "Lucas Pereira", attendance: {} },
-      { id: 10, name: "Camila Rodrigues", attendance: {} },
-      { id: 11, name: "Diego Almeida", attendance: {} },
-      { id: 12, name: "Beatriz Ferreira", attendance: {} },
-    ],
-  },
-]
+let classesData = []
 
 // Initialize supabase - use the same instance as other files
 const supabase = window.supabase
@@ -43,11 +10,54 @@ const supabase = window.supabase
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
   checkAuthAndLoadUser()
+  loadClassesFromDatabase()
   // Force load frequency section after a small delay to ensure DOM is ready
   setTimeout(() => {
     showSection("frequencia")
   }, 100)
 })
+
+async function loadClassesFromDatabase() {
+  try {
+    // Fetch classes with their students
+    const { data: classes, error: classError } = await supabase
+      .from("classes")
+      .select(`
+        id,
+        name,
+        students (
+          id,
+          name
+        )
+      `)
+      .order("name")
+
+    if (classError) {
+      console.error("Error fetching classes:", classError)
+      return
+    }
+
+    // Transform data to match our existing structure
+    classesData = classes.map((classItem) => ({
+      id: classItem.id,
+      name: classItem.name,
+      students: classItem.students.map((student) => ({
+        id: student.id,
+        name: student.name,
+        attendance: {},
+      })),
+    }))
+
+    console.log("Classes loaded from database:", classesData)
+
+    // Refresh the content if we're on the frequency section
+    if (currentSection === "frequencia") {
+      loadSectionContent("frequencia")
+    }
+  } catch (error) {
+    console.error("Error loading classes:", error)
+  }
+}
 
 async function checkAuthAndLoadUser() {
   try {
@@ -166,6 +176,21 @@ function getFrequenciaContent() {
 }
 
 function getClassSelectionContent() {
+  if (classesData.length === 0) {
+    return `
+      <div class="section-content">
+        <h3 class="section-title">
+          <i class="ph ph-chart-bar"></i>
+          Carregando Turmas...
+        </h3>
+        <div style="text-align: center; padding: 40px;">
+          <i class="ph ph-spinner" style="font-size: 48px; color: #cf1c29; animation: spin 1s linear infinite;"></i>
+          <p style="margin-top: 20px; color: #cccccc;">Carregando dados das turmas...</p>
+        </div>
+      </div>
+    `
+  }
+
   return `
     <div class="section-content">
       <h3 class="section-title">
@@ -173,7 +198,7 @@ function getClassSelectionContent() {
         Selecionar Turma
       </h3>
       <div class="class-grid">
-        ${mockClasses
+        ${classesData
           .map(
             (classItem) => `
           <div class="class-card" onclick="selectClass(${classItem.id})">
@@ -194,7 +219,7 @@ function getClassSelectionContent() {
 }
 
 function getClassAttendanceContent() {
-  const classData = mockClasses.find((c) => c.id === selectedClass)
+  const classData = classesData.find((c) => c.id === selectedClass)
   if (!classData) return getClassSelectionContent()
 
   const today = new Date().toISOString().split("T")[0]
@@ -275,7 +300,7 @@ function getClassAttendanceContent() {
 }
 
 function getStudentDashboard() {
-  const classData = mockClasses.find((c) => c.students.some((s) => s.id === selectedStudent))
+  const classData = classesData.find((c) => c.students.some((s) => s.id === selectedStudent))
   const student = classData?.students.find((s) => s.id === selectedStudent)
 
   if (!student) return getClassSelectionContent()
@@ -396,23 +421,42 @@ function closeAddStudentModal() {
   document.getElementById("studentName").value = ""
 }
 
-function addNewStudent() {
+async function addNewStudent() {
   const studentName = document.getElementById("studentName").value.trim()
   if (!studentName) {
     alert("Por favor, digite o nome do aluno.")
     return
   }
 
-  const classData = mockClasses.find((c) => c.id === selectedClass)
-  if (classData) {
-    const newStudent = {
-      id: Date.now(), // Simple ID generation
-      name: studentName,
-      attendance: {},
+  try {
+    // Insert student into database
+    const { data, error } = await supabase
+      .from("students")
+      .insert([{ name: studentName, class_id: selectedClass }])
+      .select()
+
+    if (error) {
+      console.error("Error adding student:", error)
+      alert("Erro ao adicionar aluno. Tente novamente.")
+      return
     }
-    classData.students.push(newStudent)
+
+    // Update local data
+    const classData = classesData.find((c) => c.id === selectedClass)
+    if (classData && data[0]) {
+      classData.students.push({
+        id: data[0].id,
+        name: data[0].name,
+        attendance: {},
+      })
+    }
+
     closeAddStudentModal()
     loadSectionContent("frequencia")
+    alert("Aluno adicionado com sucesso!")
+  } catch (error) {
+    console.error("Error adding student:", error)
+    alert("Erro ao adicionar aluno. Tente novamente.")
   }
 }
 
@@ -424,7 +468,7 @@ function updateStudentAttendance(studentId, status) {
 
 function saveAttendance() {
   const date = document.getElementById("attendanceDate").value
-  const classData = mockClasses.find((c) => c.id === selectedClass)
+  const classData = classesData.find((c) => c.id === selectedClass)
 
   if (!classData) return
 
